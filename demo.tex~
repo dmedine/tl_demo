@@ -1,0 +1,52 @@
+\documentclass{article}
+\usepackage{hyperref}
+\begin{document}
+\title{`Continuous-Time' Synthesis and the Context of Timelab'}
+\maketitle
+\section{Introduction}
+
+\subsection{why timelab?}
+\subsubsection{existing systems}
+
+\begin{itemize}Music-N/CSound
+\item rigid structure 
+\item difficult to interact with 
+\item obtuse representation of scores and synths
+\item score/instrument layout insists on antique perception of music composition/creation -- a notion which in many ways goes against the grain of analog electronic music practices 
+%note -- discuss Stockhausen, Shaffer, and Buchla here
+\end{itemize} 
+-Max/Pd
+-SuperCollider
+-ChucK
+
+\subsubsection{Fall 2012 206}
+\subsubsection{Control timing}
+\url{http://repmus.ircam.fr/mutant/rtmseminars}
+\begin{itemize}
+\item Puckette talk: 9:30 - 15:00 : DAGs and mutual exclusion, determinism
+\item McCartney talk: 29:00 - 37:45 : control rate issues
+\end{itemize}
+\subsubsection{embedded audio programming}
+
+
+\section{Continuous-Time Synthesis}
+\subsection{0-time delay lines}
+pictures
+\subsection{virtual analog}
+\subsubsection{LTspice}
+\subsubsection{wave-digital filters}
+\subsubsection{moog filter example}
+
+\subsection{new models for new sounds}
+\subsubsection{noisey oscillators}
+examples -- applications (lfos)
+\subsubsection{non-linear filters}
+????
+\subsubsection{a new way to view synthesis}
+
+\subsection{What's Next?}
+
+\section{Timelab}
+\subsection{Brief Overview}
+\subsection{Examples}
+\end{document}

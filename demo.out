@@ -1,0 +1,20 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{why timelab?}{section.1}% 2
+\BOOKMARK [3][-]{subsubsection.1.1.1}{issues with existing systems}{subsection.1.1}% 3
+\BOOKMARK [3][-]{subsubsection.1.1.2}{Fall 2012 206}{subsection.1.1}% 4
+\BOOKMARK [3][-]{subsubsection.1.1.3}{Control timing}{subsection.1.1}% 5
+\BOOKMARK [3][-]{subsubsection.1.1.4}{embedded audio programming}{subsection.1.1}% 6
+\BOOKMARK [1][-]{section.2}{Continuous-Time Synthesis}{}% 7
+\BOOKMARK [2][-]{subsection.2.1}{0-time delay lines}{section.2}% 8
+\BOOKMARK [2][-]{subsection.2.2}{virtual analog}{section.2}% 9
+\BOOKMARK [3][-]{subsubsection.2.2.1}{LTspice}{subsection.2.2}% 10
+\BOOKMARK [3][-]{subsubsection.2.2.2}{wave-digital filters}{subsection.2.2}% 11
+\BOOKMARK [3][-]{subsubsection.2.2.3}{moog filter example}{subsection.2.2}% 12
+\BOOKMARK [2][-]{subsection.2.3}{new models for new sounds}{section.2}% 13
+\BOOKMARK [3][-]{subsubsection.2.3.1}{noisey oscillators}{subsection.2.3}% 14
+\BOOKMARK [3][-]{subsubsection.2.3.2}{non-linear filters}{subsection.2.3}% 15
+\BOOKMARK [3][-]{subsubsection.2.3.3}{a new way to view synthesis}{subsection.2.3}% 16
+\BOOKMARK [2][-]{subsection.2.4}{What's Next?}{section.2}% 17
+\BOOKMARK [1][-]{section.3}{Timelab}{}% 18
+\BOOKMARK [2][-]{subsection.3.1}{Brief Overview}{section.3}% 19
+\BOOKMARK [2][-]{subsection.3.2}{Examples}{section.3}% 20
