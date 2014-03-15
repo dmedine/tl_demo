@@ -1,0 +1,1315 @@
+  sr        =  44100
+  kr        =  4410
+  ksmps     =  10
+  nchnls    =  4  
+
+    instr 1                                         ; 
+            ; basses
+
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = lopfreq
+            ; p10 = q
+            ; p11 = fmfreq
+            ; p12= fmdepth
+          
+  ifreq     =  p5  
+  iatt      =  .09
+  idec      =  .07
+  irel      =  p4*p3                                 ; long sustain, long release
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   .75
+  ivibfreq  =  p7
+  ivibdepth =  p8
+  ilopfreq  =  p9                                 ; these args are hard coded
+  iq        =  p10                                ; for now
+  ifmfreq   =  p11
+  ifmdepth  =  p12
+
+  kenv      linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+
+  k1        oscili    ivibdepth, 1/p3, 5
+  kvib1     oscili    k1, ivibfreq, 5
+  k2        oscili    ivibdepth, 1/p3, 7
+  ires      random    0, .1
+  kvib2     oscili    k2, ivibfreq+ires, 9
+
+  ires      random    0, ifreq*15 
+  ires2     random    0, .5
+
+  a1        oscili    kenv * p6, (ifreq + (kvib1*ivibdepth)), 4
+  ko1       oscili    10, (ifreq/33333), 13, 0
+  ko2       oscili    10, (ifreq/10000), 13, .1
+  ko3       oscili    10, (ifreq/50000), 13, .2
+  ko4       oscili    10, (ifreq/100000), 13, .33
+          
+ 
+
+  afilt1    reson     a1,  (ko1+1)*ifreq, 100, 1, 1
+  afilt2    reson     a1,  (ko2+1)*ifreq, 10, 1, 1
+  afilt3    reson     a1,  (ko3+1)*ifreq, 10, 1, 1
+  afilt4    reson     a1,  (ko4+1)*ifreq, 10, 1, 1
+
+  aout      =  afilt1+ afilt2+ afilt3 + afilt4
+            ; aout reson a1, kvib2*ifreq*2,  
+  
+           outq      aout, aout, aout, aout
+
+  
+            ; + (.3 * aenv1 * afiltnoise)                       ; 
+    
+
+
+    endin
+  
+
+    instr 31
+            ; fr. hrn
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+          
+  ifreq     =  p5  
+  iatt      =  .09
+  idec      =  .07
+  irel      =  p4 * p3   
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   .75
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+
+  kenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  kenv2     linseg    0, iatt, 1, idec, 1, isus, 1, irel, 0
+
+  k1        line      0, p3, 5
+  kvib1     oscili     k1, p7, 1                   
+            ; should there be separate random vibs here?
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib2     oscili     k1, p7 * (1 + ires), 1, ires2
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib3     oscili     k1, p7*(1 + ires), 1, ires2
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib4     oscili     k1, p7*(1 + ires), 1, ires2
+  ires      random    0, irand*.001
+  irandph   random    0, 1
+  a1        oscili     kenv1 * p6, (ifreq + (kvib1*ivibdepth)), 5
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a2        oscili     kenv1 *p6, (ifreq * (1+ires) + (kvib2*ivibdepth)), 5, irandph
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a3        oscili     kenv1 *p6, (ifreq * (1+ires) + (kvib3*ivibdepth)), 5, irandph
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a4        oscili     kenv1 * p6, (ifreq * (1+ires) + (kvib4*ivibdepth)), 5, irandph
+
+
+  aenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  anoise    rand      8000
+  afiltnoise   reson  anoise, kenv2*ifreq*4, ifreq/10, 1, 1
+  afiltnoise2   reson  anoise, kenv2*ifreq*5, ifreq/10, 1, 1
+  asig      =  a1 + a2+ a3 + a4 + (.5*aenv1 * afiltnoise)+ (.5*aenv1 * afiltnoise2) 
+
+  afilt     reson  asig, kenv1*(ifreq*3), ifreq*2, 1, 1
+  a0        =  0
+            outq      afilt, a0, a0, a0
+    endin
+
+
+    instr 32
+            ; fr. hrn
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+          
+  ifreq     =  p5  
+  iatt      =  .09
+  idec      =  .07
+  irel      =  p4 * p3   
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   .75
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+
+  kenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  kenv2     linseg    0, iatt, 1, idec, 1, isus, 1, irel, 0
+
+  k1        line      0, p3, 5
+  kvib1     oscili     k1, p7, 1                   
+            ; should there be separate random vibs here?
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib2     oscili     k1, p7 * (1 + ires), 1, ires2
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib3     oscili     k1, p7*(1 + ires), 1, ires2
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib4     oscili     k1, p7*(1 + ires), 1, ires2
+  ires      random    0, irand*.001
+  irandph   random    0, 1
+  a1        oscili     kenv1 * p6, (ifreq + (kvib1*ivibdepth)), 5
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a2        oscili     kenv1 *p6, (ifreq * (1+ires) + (kvib2*ivibdepth)), 5, irandph
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a3        oscili     kenv1 *p6, (ifreq * (1+ires) + (kvib3*ivibdepth)), 5, irandph
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a4        oscili     kenv1 * p6, (ifreq * (1+ires) + (kvib4*ivibdepth)), 5, irandph
+
+
+  aenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  anoise    rand      8000
+  afiltnoise   reson  anoise, kenv2*ifreq*4, ifreq/10, 1, 1
+  afiltnoise2   reson  anoise, kenv2*ifreq*5, ifreq/10, 1, 1
+  asig      =  a1 + a2+ a3 + a4 + (.5*aenv1 * afiltnoise)+ (.5*aenv1 * afiltnoise2) 
+
+  afilt     reson  asig, kenv1*(ifreq*3), ifreq*2, 1, 1
+  a0        =  0
+            outq      a0, afilt, a0, a0
+    endin
+
+
+    instr 33
+            ; fr. hrn
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+          
+  ifreq     =  p5  
+  iatt      =  .09
+  idec      =  .07
+  irel      =  p4 * p3   
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   .75
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+
+  kenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  kenv2     linseg    0, iatt, 1, idec, 1, isus, 1, irel, 0
+
+  k1        line      0, p3, 5
+  kvib1     oscili     k1, p7, 1                   
+            ; should there be separate random vibs here?
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib2     oscili     k1, p7 * (1 + ires), 1, ires2
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib3     oscili     k1, p7*(1 + ires), 1, ires2
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib4     oscili     k1, p7*(1 + ires), 1, ires2
+  ires      random    0, irand*.001
+  irandph   random    0, 1
+  a1        oscili     kenv1 * p6, (ifreq + (kvib1*ivibdepth)), 5
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a2        oscili     kenv1 *p6, (ifreq * (1+ires) + (kvib2*ivibdepth)), 5, irandph
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a3        oscili     kenv1 *p6, (ifreq * (1+ires) + (kvib3*ivibdepth)), 5, irandph
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a4        oscili     kenv1 * p6, (ifreq * (1+ires) + (kvib4*ivibdepth)), 5, irandph
+
+
+  aenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  anoise    rand      8000
+  afiltnoise   reson  anoise, kenv2*ifreq*4, ifreq/10, 1, 1
+  afiltnoise2   reson  anoise, kenv2*ifreq*5, ifreq/10, 1, 1
+  asig      =  a1 + a2+ a3 + a4 + (.5*aenv1 * afiltnoise)+ (.5*aenv1 * afiltnoise2) 
+
+  afilt     reson  asig, kenv1*(ifreq*3), ifreq*2, 1, 1
+  a0        =  0
+            outq      a0, a0, afilt, a0
+    endin
+
+
+    instr 34
+            ; fr. hrn
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+          
+  ifreq     =  p5  
+  iatt      =  .09
+  idec      =  .07
+  irel      =  p4 * p3   
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   .75
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+
+  kenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  kenv2     linseg    0, iatt, 1, idec, 1, isus, 1, irel, 0
+
+  k1        line      0, p3, 5
+  kvib1     oscili     k1, p7, 1                   
+            ; should there be separate random vibs here?
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib2     oscili     k1, p7 * (1 + ires), 1, ires2
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib3     oscili     k1, p7*(1 + ires), 1, ires2
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib4     oscili     k1, p7*(1 + ires), 1, ires2
+  ires      random    0, irand*.001
+  irandph   random    0, 1
+  a1        oscili     kenv1 * p6, (ifreq + (kvib1*ivibdepth)), 5
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a2        oscili     kenv1 *p6, (ifreq * (1+ires) + (kvib2*ivibdepth)), 5, irandph
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a3        oscili     kenv1 *p6, (ifreq * (1+ires) + (kvib3*ivibdepth)), 5, irandph
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a4        oscili     kenv1 * p6, (ifreq * (1+ires) + (kvib4*ivibdepth)), 5, irandph
+
+
+  aenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  anoise    rand      8000
+  afiltnoise   reson  anoise, kenv2*ifreq*4, ifreq/10, 1, 1
+  afiltnoise2   reson  anoise, kenv2*ifreq*5, ifreq/10, 1, 1
+  asig      =  a1 + a2+ a3 + a4 + (.5*aenv1 * afiltnoise)+ (.5*aenv1 * afiltnoise2) 
+
+  afilt     reson  asig, kenv1*(ifreq*3), ifreq*2, 1, 1
+  a0        =  0
+            outq      a0, a0, a0, afilt
+    endin
+
+    instr 41
+            ; strings -- classic subtractive synthesis
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+
+  ifreq     =  p5  
+  iamp      =  2*p6
+  iatt      =  .05 *p3
+  idec      =  .5 * p3
+  irel      =  .05   * p3
+  isus      =  (p3 - iatt - idec - irel)   
+  isuspercent  =      .85
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iqdepth   =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+
+  k1        line      0, p3, 5
+  ires      random    0, .1
+  kvib1     oscili    ivibdepth, p7, 1 
+  ires      random    0, .1
+  kvib2     oscili    ivibdepth, p7+ires, 1 
+  ires      random    0, .1 
+  kvib3     oscili    ivibdepth, p7+ires, 1
+  ires      random    0, .1
+  kvib4     oscili    ivibdepth, p7+ires, 1
+
+
+  kenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  ires      random    -.1, .1
+  kenv2     linseg    0, iatt+ires, 1, idec, isuspercent, isus, isuspercent, irel-ires, 0
+  ires      random    -.1, .1
+  kenv4     linseg    0, iatt+ires, 1, idec, isuspercent, isus, isuspercent, irel-ires, 0
+
+  kenv3     transeg   .5, iatt, -1, 10, idec, -1, 7.5, isus, -1, 7.5, irel, -1, 1
+  a1        gbuzz    kenv2*iamp, (ifreq+kvib1), 6, 0, .7, 1
+  a2        gbuzz    kenv2*iamp, (ifreq+kvib2), 6, 1, .7, 1
+  a3        gbuzz    kenv2*iamp, (ifreq+kvib3), 6, 2, .7, 1
+  a4        gbuzz    kenv2*iamp, (ifreq+kvib4), 6, 3, .7, 1
+
+  a5        gbuzz     kenv1*iamp, (ifreq+kvib1), 6, 0, .7, 1
+  a6        gbuzz     kenv1*iamp, (ifreq+kvib2), 6, 1, .7, 1
+  a7        gbuzz     kenv1*iamp, (ifreq+kvib3), 6, 2, .7, 1
+  a8        gbuzz     kenv1*iamp, (ifreq+kvib4), 6, 3, .7, 1
+
+  a13        =  (a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8)
+  a14       reson     a13, (ifreq*2), 1000, 1, 1
+  a0        =  0
+            outq       a14, a0, a0, a0
+    endin
+
+
+    instr 42
+            ; strings -- classic subtractive synthesis
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+
+  ifreq     =  p5
+  iamp      =  3*p6  
+  iatt      =  .05 *p3
+  idec      =  .5 * p3
+  irel      =  .05   * p3
+  isus      =  (p3 - iatt - idec - irel)   
+  isuspercent  =      .85
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iqdepth   =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+
+  k1        line      0, p3, 5
+  ires      random    0, .1
+  kvib1     oscili    ivibdepth, p7, 1 
+  ires      random    0, .1
+  kvib2     oscili    ivibdepth, p7+ires, 1 
+  ires      random    0, .1 
+  kvib3     oscili    ivibdepth, p7+ires, 1
+  ires      random    0, .1
+  kvib4     oscili    ivibdepth, p7+ires, 1
+
+
+  kenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  ires      random    -.1, .1
+  kenv2     linseg    0, iatt+ires, 1, idec, isuspercent, isus, isuspercent, irel-ires, 0
+  ires      random    -.1, .1
+  kenv4     linseg    0, iatt+ires, 1, idec, isuspercent, isus, isuspercent, irel-ires, 0
+
+  kenv3     transeg   .5, iatt, -1, 10, idec, -1, 7.5, isus, -1, 7.5, irel, -1, 1
+  a1        gbuzz    kenv2*iamp, (ifreq+kvib1), 6, 0, .7, 1
+  a2        gbuzz    kenv2*iamp, (ifreq+kvib2), 6, 1, .7, 1
+  a3        gbuzz    kenv2*iamp, (ifreq+kvib3), 6, 2, .7, 1
+  a4        gbuzz    kenv2*iamp, (ifreq+kvib4), 6, 3, .7, 1
+
+  a5        gbuzz     kenv1*iamp, (ifreq+kvib1), 6, 0, .7, 1
+  a6        gbuzz     kenv1*iamp, (ifreq+kvib2), 6, 1, .7, 1
+  a7        gbuzz     kenv1*iamp, (ifreq+kvib3), 6, 2, .7, 1
+  a8        gbuzz     kenv1*iamp, (ifreq+kvib4), 6, 3, .7, 1
+
+  a13        =  (a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8)
+  a14       reson     a13, (ifreq*2), 1000, 1, 1
+  a0        =  0
+            outq       a0, a14, a0, a0
+    endin
+
+
+    instr 43
+            ; strings -- classic subtractive synthesis
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+
+  ifreq     =  p5  
+  iamp      =  3*p6
+  iatt      =  .05 *p3
+  idec      =  .5 * p3
+  irel      =  .05   * p3
+  isus      =  (p3 - iatt - idec - irel)   
+  isuspercent  =      .85
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iqdepth   =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+
+  k1        line      0, p3, 5
+  ires      random    0, .1
+  kvib1     oscili    ivibdepth, p7, 1 
+  ires      random    0, .1
+  kvib2     oscili    ivibdepth, p7+ires, 1 
+  ires      random    0, .1 
+  kvib3     oscili    ivibdepth, p7+ires, 1
+  ires      random    0, .1
+  kvib4     oscili    ivibdepth, p7+ires, 1
+
+
+  kenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  ires      random    -.1, .1
+  kenv2     linseg    0, iatt+ires, 1, idec, isuspercent, isus, isuspercent, irel-ires, 0
+  ires      random    -.1, .1
+  kenv4     linseg    0, iatt+ires, 1, idec, isuspercent, isus, isuspercent, irel-ires, 0
+
+  kenv3     transeg   .5, iatt, -1, 10, idec, -1, 7.5, isus, -1, 7.5, irel, -1, 1
+  a1        gbuzz    kenv2*iamp, (ifreq+kvib1), 6, 0, .7, 1
+  a2        gbuzz    kenv2*iamp, (ifreq+kvib2), 6, 1, .7, 1
+  a3        gbuzz    kenv2*iamp, (ifreq+kvib3), 6, 2, .7, 1
+  a4        gbuzz    kenv2*iamp, (ifreq+kvib4), 6, 3, .7, 1
+
+  a5        gbuzz     kenv1*iamp, (ifreq+kvib1), 6, 0, .7, 1
+  a6        gbuzz     kenv1*iamp, (ifreq+kvib2), 6, 1, .7, 1
+  a7        gbuzz     kenv1*iamp, (ifreq+kvib3), 6, 2, .7, 1
+  a8        gbuzz     kenv1*iamp, (ifreq+kvib4), 6, 3, .7, 1
+
+  a13        =  (a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8)
+  a14        reson  a13, (ifreq*2), 1000, 1, 1
+  a0        =  0
+            outq       a0, a0, a14, a0
+    endin
+
+
+    instr 44
+            ; strings -- classic subtractive synthesis
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+
+  ifreq     =  p5
+  iamp      =  6*p6  
+  iatt      =  .05 *p3
+  idec      =  .5 * p3
+  irel      =  .05   * p3
+  isus      =  (p3 - iatt - idec - irel)   
+  isuspercent  =      .85
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iqdepth   =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+
+  k1        line      0, p3, 5
+  ires      random    0, .1
+  kvib1     oscili    ivibdepth, p7, 1 
+  ires      random    0, .1
+  kvib2     oscili    ivibdepth, p7+ires, 1 
+  ires      random    0, .1 
+  kvib3     oscili    ivibdepth, p7+ires, 1
+  ires      random    0, .1
+  kvib4     oscili    ivibdepth, p7+ires, 1
+
+
+  kenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  ires      random    -.1, .1
+  kenv2     linseg    0, iatt+ires, 1, idec, isuspercent, isus, isuspercent, irel-ires, 0
+  ires      random    -.1, .1
+  kenv4     linseg    0, iatt+ires, 1, idec, isuspercent, isus, isuspercent, irel-ires, 0
+
+  kenv3     transeg   .5, iatt, -1, 10, idec, -1, 7.5, isus, -1, 7.5, irel, -1, 1
+  a1        gbuzz    kenv2*iamp, (ifreq+kvib1), 6, 0, .7, 1
+  a2        gbuzz    kenv2*iamp, (ifreq+kvib2), 6, 1, .7, 1
+  a3        gbuzz    kenv2*iamp, (ifreq+kvib3), 6, 2, .7, 1
+  a4        gbuzz    kenv2*iamp, (ifreq+kvib4), 6, 3, .7, 1
+
+  a5        gbuzz     kenv1*iamp, (ifreq+kvib1), 6, 0, .7, 1
+  a6        gbuzz     kenv1*iamp, (ifreq+kvib2), 6, 1, .7, 1
+  a7        gbuzz     kenv1*iamp, (ifreq+kvib3), 6, 2, .7, 1
+  a8        gbuzz     kenv1*iamp, (ifreq+kvib4), 6, 3, .7, 1
+
+  a13        =  (a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8)
+  a14       reson     a13, (ifreq*2), 1000, 1, 1
+  a0        =  0
+            outq       a0, a0, a0, a14
+    endin
+
+
+ 
+  instr 51
+            ; 'flute'
+          
+
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+          
+  ifreq     =  p5  
+  iamp      =  p6*1  
+  iatt      =  .01*p3
+
+  idec      =  .01*p3
+  irel      =  p4 * p3   
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   .95
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+  
+
+  kenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  ires      random    0, .1
+  idel      =  ires * p3  
+  kenv2     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  ires      random    0, .1
+  idel      =  ires * p3
+
+ 
+  k1        line      0, p3, 5
+  kvib1     oscili     k1, p7, 1                   
+            ; should there be separate random vibs here?
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib2     oscili     k1, p7 * (1 + ires), 1, ires2
+  ires      random    0, .1
+  ires2     random    0, 1
+  a1        oscili    kenv1 * iamp, (ifreq + (kvib1*ivibdepth)), 1
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a2        oscili     kenv2 * iamp, (ifreq * (1+ires) + (kvib2*ivibdepth)), 1, irandph
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  iatt      =  .1*p3
+  isus      =  p3 - iatt - idec - irel
+  aenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  anoise    rand      8000
+  afiltnoise   reson  anoise, ifreq, ifreq/20, 1, 1
+  asig      =  a1+a2+(.25 * afiltnoise) 
+
+  afilt     reson  asig, kenv1*ifreq, ifreq/5, 1, 1
+  a0        =  0
+            outq      afilt, a0, a0, a0
+    endin
+
+ instr 52
+            ; 'flute'
+          
+
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+          
+  ifreq     =  p5  
+  iatt      =  .01*p3
+  idec      =  .01*p3
+  irel      =  p4 * p3   
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   .95 
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+  iamp      =  p6
+  kenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  ires      random    0, .1
+  idel      =  ires * p3  
+  kenv2     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  ires      random    0, .1
+  idel      =  ires * p3
+ 
+  k1        line      0, p3, 5
+  kvib1     oscili     k1, p7, 1                   
+            ; should there be separate random vibs here?
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib2     oscili     k1, p7 * (1 + ires), 1, ires2
+  ires      random    0, .1
+  ires2     random    0, 1
+  a1        oscili    kenv1 * iamp, (ifreq + (kvib1*ivibdepth)), 1
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a2        oscili     kenv2 * iamp, (ifreq * (1+ires) + (kvib2*ivibdepth)), 1, irandph
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  iatt      =  .1*p3
+  isus      =  p3 - iatt - idec - irel
+  aenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  anoise    rand      8000
+  afiltnoise   reson  anoise, ifreq, ifreq/20, 1, 1
+  asig      =  a1+a2+(.25 * afiltnoise) 
+
+  afilt     reson  asig, kenv1*ifreq, ifreq/5, 1, 1
+  a0        =  0
+            outq      a0, afilt, a0, a0
+    endin
+
+ instr 53
+            ; 'flute'
+          
+
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+          
+  ifreq     =  p5  
+  iatt      =  .01*p3
+  idec      =  .01*p3
+  irel      =  p4 * p3   
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   .95
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+  iamp      =  p6
+
+  kenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  ires      random    0, .1
+  idel      =  ires * p3  
+  kenv2     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  ires      random    0, .1
+  idel      =  ires * p3
+ 
+  k1        line      0, p3, 5
+  kvib1     oscili     k1, p7, 1                   
+            ; should there be separate random vibs here?
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib2     oscili     k1, p7 * (1 + ires), 1, ires2
+  ires      random    0, .1
+  ires2     random    0, 1
+  a1        oscili    kenv1 * iamp, (ifreq + (kvib1*ivibdepth)), 1
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a2        oscili     kenv2 * iamp, (ifreq * (1+ires) + (kvib2*ivibdepth)), 1, irandph
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  iatt      =  .1*p3
+  isus      =  p3 - iatt - idec - irel
+  aenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  anoise    rand      8000
+  afiltnoise   reson  anoise, ifreq, ifreq/20, 1, 1
+  asig      =  a1+a2+(.25 * afiltnoise) 
+
+  afilt     reson  asig, kenv1*ifreq, ifreq/5, 1, 1
+  a0        =  0
+            outq      a0, a0, afilt, a0
+    endin
+
+ instr 54
+            ; 'flute'
+          
+
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+          
+  ifreq     =  p5  
+  iatt      =  .01*p3
+  idec      =  .01*p3
+  irel      =  p4 * p3   
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   .95
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+  iamp      =  p6
+
+  kenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  ires      random    0, .1
+  idel      =  ires * p3  
+  kenv2     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  ires      random    0, .1
+  idel      =  ires * p3
+ 
+  k1        line      0, p3, 5
+  kvib1     oscili     k1, p7, 1                   
+            ; should there be separate random vibs here?
+  ires      random    0, .1
+  ires2     random    0, 1
+  kvib2     oscili     k1, p7 * (1 + ires), 1, ires2
+  ires      random    0, .1
+  ires2     random    0, 1
+  a1        oscili    kenv1 * iamp, (ifreq + (kvib1*ivibdepth)), 1
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  a2        oscili     kenv2 * iamp, (ifreq * (1+ires) + (kvib2*ivibdepth)), 1, irandph
+  ires      random    0, irand*.001
+  irandph   random    0, 1  
+  iatt      =  .1*p3
+  isus      =  p3 - iatt - idec - irel
+  aenv1     linseg    0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  anoise    rand      8000
+  afiltnoise   reson  anoise, ifreq, ifreq/20, 1, 1
+  asig      =  a1+a2+(.25 * afiltnoise)           ; 
+
+  afilt     reson  asig, kenv1*ifreq, ifreq/5, 1, 1
+  a0        =  0
+            outq      a0, a0, a0, afilt
+    endin
+
+
+
+
+  instr 61
+            ; 'clar'
+          
+
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+          
+  ifreq     =  p5  
+  iatt      =  .075*p3
+  idec      =  .05*p3
+  irel      =  .1*p3    
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   1
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+  iamp      =  p6*1.5
+
+  kenv1     linseg 0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  a1        oscili    iamp*kenv1, ifreq, 10
+  irph      random    0, .5   
+  a2        oscili    iamp*kenv1, ifreq, 10, irph
+  irph      random    0, .5   
+  a3        oscili    iamp*kenv1, ifreq, 10, irph
+  irph      random    0, .5   
+  a4        oscili    iamp*kenv1, ifreq, 10, irph
+
+  ko1       oscili    10, 1, 1, 0
+  ko2       oscili    10, .9, 1, .1
+  ko3       oscili    10, .8, 1, .2
+  ko4       oscili    10, .7, 1, .33
+
+  anoise    rand      8000
+  afiltnoise   reson  anoise, ifreq, ifreq/10, 1, 1
+  asig      =  a1+ a2+a3+a4     
+ ;   asig      =  a1+ a2+a3+a4+(.25*afiltnoise)
+          
+ 
+  a0        =  0
+  afilt1    reson     asig,  (ko1+1)*ifreq/10, 10, 1, 1
+  afilt2    reson     asig,  (ko2+1)*ifreq/9, 10, 1, 1
+  afilt3    reson     asig,  (ko3+1)*ifreq/8, 10, 1, 1
+  afilt4    reson     asig,  (ko4+1)*ifreq/7, 10, 1, 1
+  
+  afilt     reson  asig, kenv1* ifreq, 800, 1, 1
+  aout      =  afilt + p4*(afilt1 + afilt2 + afilt3 + afilt4)
+
+            outq       aout, a0, a0, a0
+    endin
+
+ instr 62
+            ; 'clar'
+          
+
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+          
+  ifreq     =  p5  
+  iatt      =  .075*p3
+  idec      =  .05*p3
+  irel      =  .1  * p3  
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   1
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+  iamp      =  p6*1.5
+
+  kenv1     linseg 0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  a1        oscili    iamp*kenv1, ifreq, 10
+  irph      random    0, .5   
+  a2        oscili    iamp*kenv1, ifreq, 10, irph
+  irph      random    0, .5   
+  a3        oscili    iamp*kenv1, ifreq, 10, irph
+  irph      random    0, .5   
+  a4        oscili    iamp*kenv1, ifreq, 10, irph
+
+  ko1       oscili    10, 1, 1, 0
+  ko2       oscili    10, .9, 1, .1
+  ko3       oscili    10, .8, 1, .2
+  ko4       oscili    10, .7, 1, .33
+
+  anoise    rand      8000
+  afiltnoise   reson  anoise, ifreq, ifreq/20, 1, 1
+  asig      =  a1+ a2+a3+a4     
+ ;   asig      =  a1+ a2+a3+a4+(.25*afiltnoise)
+
+          
+ 
+  a0        =  0
+  afilt1    reson     asig,  (ko1+1)*ifreq/10, 10, 1, 1
+  afilt2    reson     asig,  (ko2+1)*ifreq/9, 10, 1, 1
+  afilt3    reson     asig,  (ko3+1)*ifreq/8, 10, 1, 1
+  afilt4    reson     asig,  (ko4+1)*ifreq/7, 10, 1, 1
+  
+  afilt     reson  asig, kenv1* ifreq, 800, 1, 1
+  aout      =  afilt + p4*(afilt1 + afilt2 + afilt3 + afilt4)
+
+            outq       a0, aout, a0, a0
+    endin
+
+ instr 63
+            ; 'clar'
+          
+
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+          
+  ifreq     =  p5  
+  iatt      =  .075*p3
+  idec      =  .05*p3
+  irel      =  .1*p3 
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   1
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+  iamp      =  p6*1.5
+
+  kenv1     linseg 0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  a1        oscili    iamp*kenv1, ifreq, 10
+  irph      random    0, .5   
+  a2        oscili    iamp*kenv1, ifreq, 10, irph
+  irph      random    0, .5   
+  a3        oscili    iamp*kenv1, ifreq, 10, irph
+  irph      random    0, .5   
+  a4        oscili    iamp*kenv1, ifreq, 10, irph
+
+  ko1       oscili    10, 1, 1, 0
+  ko2       oscili    10, .9, 1, .1
+  ko3       oscili    10, .8, 1, .2
+  ko4       oscili    10, .7, 1, .33
+
+  anoise    rand      8000
+  afiltnoise   reson  anoise, ifreq, ifreq/20, 1, 1
+  asig      =  a1+ a2+a3+a4     
+ ;   asig      =  a1+ a2+a3+a4+(.25*afiltnoise)
+          
+ 
+  a0        =  0
+  afilt1    reson     asig,  (ko1+1)*ifreq/10, 10, 1, 1
+  afilt2    reson     asig,  (ko2+1)*ifreq/9, 10, 1, 1
+  afilt3    reson     asig,  (ko3+1)*ifreq/8, 10, 1, 1
+  afilt4    reson     asig,  (ko4+1)*ifreq/7, 10, 1, 1
+  
+  afilt     reson  asig, kenv1* ifreq, 800, 1, 1
+  aout      =  afilt + p4*(afilt1 + afilt2 + afilt3 + afilt4)
+
+            outq       a0, a0,aout, a0
+    endin
+
+ instr 64
+            ; 'clar'
+          
+
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+          
+  ifreq     =  p5  
+  iatt      =  .075*p3
+  idec      =  .05*p3
+  irel      =  .1*p3    
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   1
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+  iamp      =  p6*1.5
+
+  kenv1     linseg 0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  a1        oscili    iamp*kenv1, ifreq, 10
+  irph      random    0, .5   
+  a2        oscili    iamp*kenv1, ifreq, 10, irph
+  irph      random    0, .5   
+  a3        oscili    iamp*kenv1, ifreq, 10, irph
+  irph      random    0, .5   
+  a4        oscili    iamp*kenv1, ifreq, 10, irph
+
+  ko1       oscili    10, 1, 1, 0
+  ko2       oscili    10, .9, 1, .1
+  ko3       oscili    10, .8, 1, .2
+  ko4       oscili    10, .7, 1, .33
+
+  anoise    rand      8000
+  afiltnoise   reson  anoise, ifreq, ifreq/20, 1, 1
+  asig      =  a1+ a2+a3+a4     
+ ;   asig      =  a1+ a2+a3+a4+(.25*afiltnoise)
+ 
+          
+ 
+  a0        =  0
+  afilt1    reson     asig,  (ko1+1)*ifreq/10, 10, 1, 1
+  afilt2    reson     asig,  (ko2+1)*ifreq/9, 10, 1, 1
+  afilt3    reson     asig,  (ko3+1)*ifreq/8, 10, 1, 1
+  afilt4    reson     asig,  (ko4+1)*ifreq/7, 10, 1, 1
+  
+  afilt     reson  asig, kenv1*ifreq, 800, 1, 1
+  aout      =  afilt + p4*(afilt1 + afilt2 + afilt3 + afilt4)
+
+            outq       a0, a0, a0, aout
+    endin
+
+
+
+
+
+  instr 71
+            ; 'x2reed'
+          
+
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+
+ ifreq     =  p5  
+  iatt      =  .075*p3
+  idec      =  .05*p3
+  irel      =  .1*p3    
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   .75
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+  iamp      =  p6*1.5
+
+  kenv1     linseg 0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  a1        oscili    iamp*kenv1, ifreq, 4
+  irph      random    0, .5   
+  a2        oscili    iamp*kenv1, ifreq, 4, irph
+  irph      random    0, .5   
+  a3        oscili    iamp*kenv1, ifreq, 4, irph
+  irph      random    0, .5   
+  a4        oscili    iamp*kenv1, ifreq, 4, irph
+
+  ko1       oscili    10, .6, 1, 0
+  ko2       oscili    10, .5, 1, .1
+  ko3       oscili    10, .4, 1, .2
+  ko4       oscili    10, .3, 1, .33
+
+  anoise    rand      8000
+  afiltnoise   reson  anoise, ifreq*2, ifreq/20, 1, 1
+
+  asig      =  a1+ a2+a3+a4+(.35*afiltnoise)
+          
+ 
+
+  afilt1    reson     asig,  (ko1+1)*ifreq/10, 10, 1, 1
+  afilt2    reson     asig,  (ko2+1)*ifreq/9, 10, 1, 1
+  afilt3    reson     asig,  (ko3+1)*ifreq/8, 10, 1, 1
+  afilt4    reson     asig,  (ko4+1)*ifreq/7, 10, 1, 1
+  
+  afilt     tone  asig, kenv1* ifreq, 1
+  asig      =  afilt + p4*(afilt1 + afilt2 + afilt3 + afilt4)
+  a0        =  0
+            outq       asig, a0, a0, a0
+
+    endin
+
+ instr 72
+            ; 'x2reed'
+          
+
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+
+ ifreq     =  p5  
+  iatt      =  .075*p3
+  idec      =  .05*p3
+  irel      =  .1*p3    
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   .75
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+  iamp      =  p6*1.5
+
+  kenv1     linseg 0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  a1        oscili    iamp*kenv1, ifreq, 4
+  irph      random    0, .5   
+  a2        oscili    iamp*kenv1, ifreq, 4, irph
+  irph      random    0, .5   
+  a3        oscili    iamp*kenv1, ifreq, 4, irph
+  irph      random    0, .5   
+  a4        oscili    iamp*kenv1, ifreq, 4, irph
+
+  ko1       oscili    10, .6, 1, 0
+  ko2       oscili    10, .5, 1, .1
+  ko3       oscili    10, .4, 1, .2
+  ko4       oscili    10, .3, 1, .33
+
+  anoise    rand      8000
+  afiltnoise   reson  anoise, ifreq*2, ifreq/20, 1, 1
+
+  asig      =  a1+ a2+a3+a4+(.35*afiltnoise)
+          
+ 
+
+  afilt1    reson     asig,  (ko1+1)*ifreq/10, 10, 1, 1
+  afilt2    reson     asig,  (ko2+1)*ifreq/9, 10, 1, 1
+  afilt3    reson     asig,  (ko3+1)*ifreq/8, 10, 1, 1
+  afilt4    reson     asig,  (ko4+1)*ifreq/7, 10, 1, 1
+  
+ afilt     tone  asig, kenv1* ifreq, 1
+            ;   afilt     reson  asig, kenv1* ifreq, 100, 1, 1
+  asig      =  afilt + p4*(afilt1 + afilt2 + afilt3 + afilt4)
+  a0        =  0
+            outq       a0, asig, a0, a0
+
+    endin
+
+ instr 73
+            ; 'x2reed'
+          
+
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+
+ ifreq     =  p5  
+  iatt      =  .075*p3
+  idec      =  .05*p3
+  irel      =  .1*p3    
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   .75
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+  iamp      =  p6*1.5
+
+  kenv1     linseg 0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  a1        oscili    iamp*kenv1, ifreq, 4
+  irph      random    0, .5   
+  a2        oscili    iamp*kenv1, ifreq, 4, irph
+  irph      random    0, .5   
+  a3        oscili    iamp*kenv1, ifreq, 4, irph
+  irph      random    0, .5   
+  a4        oscili    iamp*kenv1, ifreq, 4, irph
+
+  ko1       oscili    10, .6, 1, 0
+  ko2       oscili    10, .5, 1, .1
+  ko3       oscili    10, .4, 1, .2
+  ko4       oscili    10, .3, 1, .33
+
+  anoise    rand      8000
+  afiltnoise   reson  anoise, ifreq*2, ifreq/20, 1, 1
+
+  asig      =  a1+ a2+a3+a4+(.35*afiltnoise)
+          
+ 
+
+  afilt1    reson     asig,  (ko1+1)*ifreq/10, 10, 1, 1
+  afilt2    reson     asig,  (ko2+1)*ifreq/9, 10, 1, 1
+  afilt3    reson     asig,  (ko3+1)*ifreq/8, 10, 1, 1
+  afilt4    reson     asig,  (ko4+1)*ifreq/7, 10, 1, 1
+  
+ afilt     tone  asig, kenv1* ifreq, 1
+            ;   afilt     reson  asig, kenv1* ifreq, 100, 1, 1
+  asig      =  afilt + p4*(afilt1 + afilt2 + afilt3 + afilt4)
+  a0        =  0
+            outq       a0, a0, asig, a0
+
+    endin
+
+ instr 74
+            ; 'x2reed'
+          
+
+            ; p5 = pitch
+            ; p6 = amp
+            ; p7 = vib
+            ; p8 = vibdepth
+            ; p9 = random pitch
+            ; p10 = lowpass cutoff
+            ; p11 = lowpass q
+            ; p12 = fmfreq
+            ; p13 = fmdepth
+
+ ifreq     =  p5  
+  iatt      =  .075*p3
+  idec      =  .05*p3
+  irel      =  .1 * p3    
+  isus      =  p3 - iatt - idec - irel   
+  isuspercent  =   .75
+  ivibdepth =  p8
+  irand     =  p9
+  ilopfreq  =  p10
+  iq        =  p11
+  ifmfreq   =  p12
+  ifmdepth  =  p13
+  iamp      =  p6*1.5
+
+  kenv1     linseg 0, iatt, 1, idec, isuspercent, isus, isuspercent, irel, 0
+  a1        oscili    iamp*kenv1, ifreq, 4
+  irph      random    0, .5   
+  a2        oscili    iamp*kenv1, ifreq, 4, irph
+  irph      random    0, .5   
+  a3        oscili    iamp*kenv1, ifreq, 4, irph
+  irph      random    0, .5   
+  a4        oscili    iamp*kenv1, ifreq, 4, irph
+
+  ko1       oscili    10, .6, 1, 0
+  ko2       oscili    10, .5, 1, .1
+  ko3       oscili    10, .4, 1, .2
+  ko4       oscili    10, .3, 1, .33
+
+  anoise    rand      8000
+  afiltnoise   reson  anoise, ifreq*2, ifreq/20, 1, 1
+
+  asig      =  a1+ a2+a3+a4+(.35*afiltnoise)
+          
+ 
+
+  afilt1    reson     asig,  (ko1+1)*ifreq/10, 10, 1, 1
+  afilt2    reson     asig,  (ko2+1)*ifreq/9, 10, 1, 1
+  afilt3    reson     asig,  (ko3+1)*ifreq/8, 10, 1, 1
+  afilt4    reson     asig,  (ko4+1)*ifreq/7, 10, 1, 1
+            ;   afilt     reson  asig, kenv1* ifreq, 100, 1, 1
+ afilt     tone  asig, kenv1* ifreq, 1  
+asig      =  afilt + p4*(afilt1 + afilt2 + afilt3 + afilt4)
+  a0        =  0
+            outq      a0, a0,a0,asig
+
+    endin
