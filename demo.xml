@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?latexml searchpaths="/home/dmedine/talks/tl_demo"?>
+<?latexml class="article"?>
+<?latexml package="hyperref"?>
+<?latexml RelaxNGSchema="LaTeXML"?>
+<document xmlns="http://dlmf.nist.gov/LaTeXML" class="ltx_authors_1line">
+  <resource src="LaTeXML.css" type="text/css"/>
+  <resource src="ltx-article.css" type="text/css"/>
+  <title>‘Continuous-Time’ Synthesis and the Context of Timelab’</title>
+  <section refnum="1" xml:id="S1">
+    <title><tag close=" ">1</tag>Introduction</title>
+    <subsection refnum="1.1" xml:id="S1.SS1">
+      <title><tag close=" ">1.1</tag>why timelab?</title>
+      <para xml:id="S1.SS1.p1">
+        <p>I wanted to go through the excercise of designing and implementing an audio scheduler in order to learn more about the underlying structure of computermusic systems and to create an environment that side-steps what I see as the limitations of existing systems.</p>
+      </para>
+      <subsubsection refnum="1.1.1" xml:id="S1.SS1.SSS1">
+        <title><tag close=" ">1.1.1</tag>issues with existing systems</title>
+        <paragraph xml:id="S1.SS1.SSS1.P1">
+          <title>Music-N/CSound (Max Mathews, Barry Vercoe, John ffitch, and others 1957-present)</title>
+          <para xml:id="S1.SS1.SSS1.P1.p1">
+            <p>A classic programming environment, stemming from the pioneering work of Max Mathews, it is  widely used, and highly developed.</p>
+            <itemize xml:id="I1">
+              <item xml:id="I1.i1">
+                <tag>•</tag>
+                <para xml:id="I1.i1.p1">
+                  <p>rigid structure</p>
+                </para>
+              </item>
+              <item xml:id="I1.i2">
+                <tag>•</tag>
+                <para xml:id="I1.i2.p1">
+                  <p>difficult to interact with / compile time</p>
+                </para>
+              </item>
+              <item xml:id="I1.i3">
+                <tag>•</tag>
+                <para xml:id="I1.i3.p1">
+                  <p>obtuse representation of scores and synths / hard to read (pull up examples)</p>
+                </para>
+              </item>
+              <item xml:id="I1.i4">
+                <tag>•</tag>
+                <para xml:id="I1.i4.p1">
+                  <p>score/instrument layout insists on antique perception of music composition/creation – a notion which in many ways goes against the grain of analog electronic music practices
+<!-- %note __ discuss Stockhausen, Shaffer, and Buchla here --></p>
+                </para>
+              </item>
+            </itemize>
+          </para>
+        </paragraph>
+        <paragraph xml:id="S1.SS1.SSS1.P2">
+          <title>Max/Msp and Pd (David Zicarelli and Miller Puckette, 1987-present)</title>
+          <para xml:id="S1.SS1.SSS1.P2.p1">
+            <p>An almost ubiquitous and highly interactive paradigm, these programs the are industry standards (commercial and open source respectively) for experimental audio algorithm design.
+<!-- %**** demo.tex Line 25 **** --></p>
+            <itemize xml:id="I2">
+              <item xml:id="I2.i1">
+                <tag>•</tag>
+                <para xml:id="I2.i1.p1">
+                  <p>patch chords and guis!!!<!-- %picture --></p>
+                </para>
+              </item>
+              <item xml:id="I2.i2">
+                <tag>•</tag>
+                <para xml:id="I2.i2.p1">
+                  <p>difficulty of iterating loops<!-- %picture --></p>
+                </para>
+              </item>
+              <item xml:id="I2.i3">
+                <tag>•</tag>
+                <para xml:id="I2.i3.p1">
+                  <p>difficulty in doing things in mass</p>
+                </para>
+              </item>
+              <item xml:id="I2.i4">
+                <tag>•</tag>
+                <para xml:id="I2.i4.p1">
+                  <p>flow diagram structure (borrowing from analog synthesizers) also insists on a way of thinking about music composition – denying the user a ‘code-ish’ mindset</p>
+                </para>
+              </item>
+            </itemize>
+          </para>
+        </paragraph>
+        <paragraph xml:id="S1.SS1.SSS1.P3">
+          <title>SuperCollider (James McCartney, 1996-present)</title>
+          <para xml:id="S1.SS1.SSS1.P3.p1">
+            <p>SC provides the interactiveness of Pd with the ‘codiness’ of a text based programming environment such as CSound.</p>
+            <itemize xml:id="I3">
+              <item xml:id="I3.i1">
+                <tag>•</tag>
+                <para xml:id="I3.i1.p1">
+                  <p>server/client structure has benefits but designates a .2s default latency between server time and client time<!-- %McCartney lecture --></p>
+                </para>
+              </item>
+              <item xml:id="I3.i2">
+                <tag>•</tag>
+                <para xml:id="I3.i2.p1">
+                  <p>non-standard editor and gui environments</p>
+                </para>
+              </item>
+            </itemize>
+          </para>
+        </paragraph>
+        <paragraph xml:id="S1.SS1.SSS1.P4">
+          <title>ChucK (Ge Wang and Perry Cook)</title>
+          <para xml:id="S1.SS1.SSS1.P4.p1">
+            <p>ChucK is another text-based audio programming environment that emphasizes a live-coding ethos.</p>
+            <itemize xml:id="I4">
+              <item xml:id="I4.i1">
+                <tag>•</tag>
+                <para xml:id="I4.i1.p1">
+                  <p>admittedly emphasizes ease of programming over performance (ChucK is slow)</p>
+                </para>
+              </item>
+              <item xml:id="I4.i2">
+                <tag>•</tag>
+                <para xml:id="I4.i2.p1">
+                  <p>unintuitive approach to time by treating ‘now’ as a variable that we manipulate by hand: <ref class="ltx_url" href="http://en.wikipedia.org/wiki/ChucK"><text font="typewriter">http://en.wikipedia.org/wiki/ChucK</text></ref></p>
+                </para>
+              </item>
+            </itemize>
+          </para>
+        </paragraph>
+      </subsubsection>
+      <subsubsection refnum="1.1.2" xml:id="S1.SS1.SSS2">
+        <title><tag close=" ">1.1.2</tag>Control timing</title>
+        <para xml:id="S1.SS1.SSS2.p1">
+          <p>All of the above metnioned systems have specific solutions to problems of rectifying the timing between control input and precisely when control is enacted in the DSP engine. Cf. my poster from last year’s ICMC (TIMELAB: YET, YET ANOTHER REAL-TIME AUDIO PROGRAMMING SYSTEM – not yet available online) for a quick and dirty on this subject.</p>
+        </para>
+        <para xml:id="S1.SS1.SSS2.p2">
+          <p>Also of relevance are these talks by Miller Puckette and James McCartney:
+<!-- %**** demo.tex Line 50 **** --><ref class="ltx_url" href="http://repmus.ircam.fr/mutant/rtmseminars"><text font="typewriter">http://repmus.ircam.fr/mutant/rtmseminars</text></ref></p>
+          <itemize xml:id="I5">
+            <item xml:id="I5.i1">
+              <tag>•</tag>
+              <para xml:id="I5.i1.p1">
+                <p>Puckette talk: 9:30 - 15:00 : DAGs and mutual exclusion, determinism</p>
+              </para>
+            </item>
+            <item xml:id="I5.i2">
+              <tag>•</tag>
+              <para xml:id="I5.i2.p1">
+                <p>McCartney talk: 29:00 - 37:45 : control rate issues</p>
+              </para>
+            </item>
+          </itemize>
+        </para>
+      </subsubsection>
+      <subsubsection refnum="1.1.3" xml:id="S1.SS1.SSS3">
+        <title><tag close=" ">1.1.3</tag>embedded audio programming</title>
+        <para xml:id="S1.SS1.SSS3.p1">
+          <p>Just the other day (Friday, March 14) someone posted to the Pd-list asking if it was possible to crunch a Pd patch down into a guitar pedal (the answer was ‘no, not really’). Clearly, there is a market for throwing these kinds of experimental algorithms into a guitar pedal packages. One solution is to utilize micro computers such as the Raspberry Pi or UDOO. Another is to have an audio programming API in C with a build environment that can target truly embedable hardware, such as ST’s discovery board featuring the ARM Cortex processor (or any of the open source solutions built around these chips).</p>
+        </para>
+      </subsubsection>
+    </subsection>
+  </section>
+  <section refnum="2" xml:id="S2">
+    <title><tag close=" ">2</tag>Continuous-Time Synthesis</title>
+    <paragraph xml:id="S2.SS1.SSS3.P1">
+      <title>What is meant by ‘continuous-time synthesis’</title>
+      <para xml:id="S2.SS1.SSS3.P1.p1">
+        <itemize xml:id="I6">
+          <item xml:id="I6.i1">
+            <tag>•</tag>
+            <para xml:id="I6.i1.p1">
+              <p>as distinct from traditional computer music DSP structure which consists of UGens and signal flow</p>
+            </para>
+          </item>
+          <item xml:id="I6.i2">
+            <tag>•</tag>
+            <para xml:id="I6.i2.p1">
+              <p>use differential equations to model synthesis behaviors</p>
+            </para>
+          </item>
+        </itemize>
+        <p>This affords us advantages that are beyond the scope of UGen/signal flow structures. The programmer may create complex synthesis algorithms by arranging equations in a network with interleaved numerical solver stages so that time does not pass between nodes in the network. In other words, ‘delay free loops’, or ‘instantaneous feedback’ is acheivable. The mathematical necessity of unit delay is currently a limitation of the sate of the art in computer music systems and synthesis theory.</p>
+      </para>
+    </paragraph>
+    <subsection refnum="2.1" xml:id="S2.SS1">
+      <title><tag close=" ">2.1</tag>sync functions</title>
+      <para xml:id="S2.SS1.p1">
+        <p>Delay free feedback in a network can fascilitate (among other things) accurate oscillator sync. In the parlance of analog synthesizers, a master oscillator may slave another one to it by resetting the phase of the slave at every other zero crossing (each period) of the master.<break/><ref href="./sync4.pdf">red function slaves blue function</ref><break/><ref href="./sync6.pdf">misaligned reciprocal sync</ref><break/></p>
+      </para>
+      <para xml:id="S2.SS1.p2">
+        <p>Sync functionality is but one benefit of delay free loops. In general having instantaneous state updates from stage to stage in a synthesis algorithms allows for a general solution to numerous problems associated with Virtual Analog.</p>
+      </para>
+    </subsection>
+    <subsection refnum="2.2" xml:id="S2.SS2">
+      <title><tag close=" ">2.2</tag>virtual analog</title>
+      <!-- %**** demo.tex Line 75 **** -->
+      <para xml:id="S2.SS2.p1">
+        <p>Virtual analog (VA) is the practice of emulating the sound of analog synthesizers with DSP algorithms. This is desirable because:</p>
+        <itemize xml:id="I7">
+          <item xml:id="I7.i1">
+            <tag>•</tag>
+            <para xml:id="I7.i1.p1">
+              <p>analog gear is heavy, and expensive</p>
+            </para>
+          </item>
+          <item xml:id="I7.i2">
+            <tag>•</tag>
+            <para xml:id="I7.i2.p1">
+              <p>analog gear is sensitive to heat and requires constant tuning and maintainance</p>
+            </para>
+          </item>
+          <item xml:id="I7.i3">
+            <tag>•</tag>
+            <para xml:id="I7.i3.p1">
+              <p>polyphony is ‘expensive’ in analog and ‘cheap’ in digital</p>
+            </para>
+          </item>
+          <item xml:id="I7.i4">
+            <tag>•</tag>
+            <para xml:id="I7.i4.p1">
+              <p>digitization means patches and states can be saved and easily re-accessed</p>
+            </para>
+          </item>
+        </itemize>
+        <p>But, analog ‘sounds better’. It is precisely the inexactness of analog and the nature of circuit components that give analog equipment its richness. Challenges in VA include:</p>
+        <itemize xml:id="I8">
+          <item xml:id="I8.i1">
+            <tag>•</tag>
+            <para xml:id="I8.i1.p1">
+              <p>aliasing due to the Nyquist theorem</p>
+            </para>
+          </item>
+          <item xml:id="I8.i2">
+            <tag>•</tag>
+            <para xml:id="I8.i2.p1">
+              <p>parameter (state) change quantization</p>
+            </para>
+          </item>
+          <item xml:id="I8.i3">
+            <tag>•</tag>
+            <para xml:id="I8.i3.p1">
+              <p>unit delay fudge-factors</p>
+            </para>
+          </item>
+        </itemize>
+        <p>Although it has been around since Synergy (1981), and the term was brought into commercial use nearly 20 years ago with the introduction of the Nord Lead 1 synthesizer (1996), VA is still a very active area of computer music research.</p>
+      </para>
+      <para xml:id="S2.SS2.p2">
+        <p>There are numerous papers and book chapters that propose novel algorithms and improvemnets to existing algorithms in VA. Many address problems in problem-specific ways. There are a also a few general solutions to these problems.</p>
+      </para>
+      <subsubsection refnum="2.2.1" xml:id="S2.SS2.SSS1">
+        <title><tag close=" ">2.2.1</tag>ngspice</title>
+        <para xml:id="S2.SS2.SSS1.p1">
+          <p>Needs be mentioned: ngspice is the current open source edition of Berkeley’s spice (Simulation Program with Integrated Circuit Emphasis – Nagel, 1971). Spice and its descendants allow users to construct virtual integrated circuits and the algorithm will simulate the behavior of the circuit by using numerical solvers. It is not real-time, nor is it intended for audio synthesis.</p>
+        </para>
+      </subsubsection>
+      <subsubsection refnum="2.2.2" xml:id="S2.SS2.SSS2">
+        <title><tag close=" ">2.2.2</tag>wave-digital filters</title>
+        <para xml:id="S2.SS2.SSS2.p1">
+          <p>WDFs are an approach to circuit emulations that are attractive because:</p>
+          <itemize xml:id="I9">
+            <item xml:id="I9.i1">
+              <tag>•</tag>
+              <para xml:id="I9.i1.p1">
+                <p>they are modular</p>
+              </para>
+            </item>
+            <item xml:id="I9.i2">
+              <tag>•</tag>
+              <para xml:id="I9.i2.p1">
+                <p>circuit component behavior is easily discretized with the bilinear transform</p>
+              </para>
+            </item>
+            <item xml:id="I9.i3">
+              <tag>•</tag>
+              <para xml:id="I9.i3.p1">
+                <p>they are computationally cheap, thus networks of very many of them are readily available
+<!-- %**** demo.tex Line 100 **** --></p>
+              </para>
+            </item>
+          </itemize>
+          <p>However, the trick of designing WDF networks often lies in dealing with delay free loops (to which often unit delay is the given solution) and non-linearities. The continuous time synthesis model comletely does away with these complications, but at the price of increased complexity in the domain of physical model design.</p>
+        </para>
+      </subsubsection>
+    </subsection>
+  </section>
+  <section refnum="3" xml:id="S3">
+    <title><tag close=" ">3</tag>Timelab</title>
+    <subsection refnum="3.1" xml:id="S3.SS1">
+      <title><tag close=" ">3.1</tag>Brief Overview</title>
+    </subsection>
+    <subsection refnum="3.2" xml:id="S3.SS2">
+      <title><tag close=" ">3.2</tag>Examples</title>
+      <subsubsection refnum="3.2.1" xml:id="S3.SS2.SSS1">
+        <title><tag close=" ">3.2.1</tag>quadrature oscillator</title>
+      </subsubsection>
+      <subsubsection refnum="3.2.2" xml:id="S3.SS2.SSS2">
+        <title><tag close=" ">3.2.2</tag>non-linear oscillators</title>
+        <para xml:id="S3.SS2.SSS2.p1">
+          <p>These are often good as LFOs due to their controlled chaotic behavior:</p>
+          <itemize xml:id="I10">
+            <item xml:id="I10.i1">
+              <tag>•</tag>
+              <para xml:id="I10.i1.p1">
+                <p>van der Pol oscillators</p>
+              </para>
+            </item>
+            <item xml:id="I10.i2">
+              <tag>•</tag>
+              <para xml:id="I10.i2.p1">
+                <p>Duffing oscillators</p>
+              </para>
+            </item>
+            <item xml:id="I10.i3">
+              <tag>•</tag>
+              <para xml:id="I10.i3.p1">
+                <p>other noisey oscillators</p>
+              </para>
+            </item>
+          </itemize>
+        </para>
+      </subsubsection>
+      <subsubsection refnum="3.2.3" xml:id="S3.SS2.SSS3">
+        <title><tag close=" ">3.2.3</tag>moog filter example</title>
+      </subsubsection>
+      <subsubsection refnum="3.2.4" xml:id="S3.SS2.SSS4">
+        <title><tag close=" ">3.2.4</tag>larger synth example</title>
+      </subsubsection>
+    </subsection>
+    <subsection refnum="3.3" xml:id="S3.SS3">
+      <title><tag close=" ">3.3</tag>new models for new sounds</title>
+      <subsubsection refnum="3.3.1" xml:id="S3.SS3.SSS1">
+        <title><tag close=" ">3.3.1</tag>noisey oscillators</title>
+        <!-- %examples __ applications (lfos) do a patch -->
+      </subsubsection>
+      <subsubsection refnum="3.3.2" xml:id="S3.SS3.SSS2">
+        <title><tag close=" ">3.3.2</tag>non-linear filters</title>
+        <!-- %???? -->
+      </subsubsection>
+      <subsubsection refnum="3.3.3" xml:id="S3.SS3.SSS3">
+        <title><tag close=" ">3.3.3</tag>a new way to view synthesis</title>
+      </subsubsection>
+    </subsection>
+  </section>
+</document>

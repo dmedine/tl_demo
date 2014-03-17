@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>1.1 why timelab?‣ 1 Introduction ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’</title>
+<!--Generated on Sun Mar 16 17:32:54 2014 by LaTeXML (version 0.7.9alpha) http://dlmf.nist.gov/LaTeXML/.-->
+<!--Document created on March 16, 2014.-->
+
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8"/>
+<link rel="stylesheet" href="LaTeXML.css" type="text/css"/>
+<link rel="stylesheet" href="ltx-article.css" type="text/css"/>
+<link rel="up" href="S1.xhtml" title="1 Introduction ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="up up" href="demo.xhtml" title="‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="start" href="demo.xhtml" title="‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="prev" href="S1.xhtml" title="1 Introduction ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="next" href="S1.SS1.SSS1.xhtml" title="1.1.1 issues with existing systems ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="section" href="S1.xhtml" title="1 Introduction ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="subsubsection" href="S1.SS1.SSS1.xhtml" title="1.1.1 issues with existing systems ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="subsubsection" href="S1.SS1.SSS2.xhtml" title="1.1.2 Control timing ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="subsubsection" href="S1.SS1.SSS3.xhtml" title="1.1.3 embedded audio programming ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="section" href="S2.xhtml" title="2 Continuous-Time Synthesis ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="subsubsection" href="S2.SS2.SSS1.xhtml" title="2.2.1 ngspice ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="subsubsection" href="S2.SS2.SSS2.xhtml" title="2.2.2 wave-digital filters ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="section" href="S3.xhtml" title="3 Timelab ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="subsubsection" href="S3.SS2.SSS1.xhtml" title="3.2.1 quadrature oscillator ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="subsubsection" href="S3.SS2.SSS2.xhtml" title="3.2.2 non-linear oscillators ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="subsubsection" href="S3.SS2.SSS3.xhtml" title="3.2.3 moog filter example ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="subsubsection" href="S3.SS2.SSS4.xhtml" title="3.2.4 larger synth example ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+<link rel="subsection" href="S3.SS3.xhtml" title="3.3 new models for new sounds ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’"/>
+</head>
+<body>
+<div class="ltx_page_main">
+<div class="ltx_page_header">
+<div><a href="S1.xhtml" title="1 Introduction ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’" class="ltx_ref" rel="up"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">1 </span>Introduction</span></a><a href="S1.xhtml" title="1 Introduction ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’" class="ltx_ref" rel="prev"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">1 </span>Introduction</span></a><a href="S1.SS1.SSS1.xhtml" title="1.1.1 issues with existing systems ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’" class="ltx_ref" rel="next"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">1.1.1 </span>issues with existing systems</span></a>
+</div></div>
+<div class="ltx_page_content">
+<div class="ltx_subsection">
+<h1 class="ltx_title ltx_title_subsection"><span class="ltx_tag ltx_tag_subsection">1.1 </span>why timelab?</h1>
+<div class="ltx_date ltx_role_creation"/>
+
+<div id="p1" class="ltx_para">
+<p class="ltx_p">I wanted to go through the excercise of designing and implementing an audio scheduler in order to learn more about the underlying structure of computermusic systems and to create an environment that side-steps what I see as the limitations of existing systems.</p>
+</div>
+<div class="ltx_subsubsection">
+<h2 class="ltx_title ltx_title_subsubsection"><span class="ltx_tag ltx_tag_subsubsection">1.1.1 </span>issues with existing systems</h2>
+
+<div id="P1" class="ltx_paragraph">
+<h3 class="ltx_title ltx_title_paragraph">Music-N/CSound (Max Mathews, Barry Vercoe, John ffitch, and others 1957-present)</h3>
+
+<div id="P1.p1" class="ltx_para">
+<p class="ltx_p">A classic programming environment, stemming from the pioneering work of Max Mathews, it is  widely used, and highly developed.</p>
+<ul id="I1" class="ltx_itemize">
+<li id="I1.i1" class="ltx_item" style="list-style-type:none;"><span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="I1.i1.p1" class="ltx_para">
+<p class="ltx_p">rigid structure</p>
+</div></li>
+<li id="I1.i2" class="ltx_item" style="list-style-type:none;"><span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="I1.i2.p1" class="ltx_para">
+<p class="ltx_p">difficult to interact with / compile time</p>
+</div></li>
+<li id="I1.i3" class="ltx_item" style="list-style-type:none;"><span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="I1.i3.p1" class="ltx_para">
+<p class="ltx_p">obtuse representation of scores and synths / hard to read (pull up examples)</p>
+</div></li>
+<li id="I1.i4" class="ltx_item" style="list-style-type:none;"><span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="I1.i4.p1" class="ltx_para">
+<p class="ltx_p">score/instrument layout insists on antique perception of music composition/creation – a notion which in many ways goes against the grain of analog electronic music practices
+</p>
+</div></li>
+</ul>
+</div>
+</div>
+<div id="P2" class="ltx_paragraph">
+<h3 class="ltx_title ltx_title_paragraph">Max/Msp and Pd (David Zicarelli and Miller Puckette, 1987-present)</h3>
+
+<div id="P2.p1" class="ltx_para">
+<p class="ltx_p">An almost ubiquitous and highly interactive paradigm, these programs the are industry standards (commercial and open source respectively) for experimental audio algorithm design.
+</p>
+<ul id="I2" class="ltx_itemize">
+<li id="I2.i1" class="ltx_item" style="list-style-type:none;"><span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="I2.i1.p1" class="ltx_para">
+<p class="ltx_p">patch chords and guis!!!</p>
+</div></li>
+<li id="I2.i2" class="ltx_item" style="list-style-type:none;"><span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="I2.i2.p1" class="ltx_para">
+<p class="ltx_p">difficulty of iterating loops</p>
+</div></li>
+<li id="I2.i3" class="ltx_item" style="list-style-type:none;"><span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="I2.i3.p1" class="ltx_para">
+<p class="ltx_p">difficulty in doing things in mass</p>
+</div></li>
+<li id="I2.i4" class="ltx_item" style="list-style-type:none;"><span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="I2.i4.p1" class="ltx_para">
+<p class="ltx_p">flow diagram structure (borrowing from analog synthesizers) also insists on a way of thinking about music composition – denying the user a ‘code-ish’ mindset</p>
+</div></li>
+</ul>
+</div>
+</div>
+<div id="P3" class="ltx_paragraph">
+<h3 class="ltx_title ltx_title_paragraph">SuperCollider (James McCartney, 1996-present)</h3>
+
+<div id="P3.p1" class="ltx_para">
+<p class="ltx_p">SC provides the interactiveness of Pd with the ‘codiness’ of a text based programming environment such as CSound.</p>
+<ul id="I3" class="ltx_itemize">
+<li id="I3.i1" class="ltx_item" style="list-style-type:none;"><span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="I3.i1.p1" class="ltx_para">
+<p class="ltx_p">server/client structure has benefits but designates a .2s default latency between server time and client time</p>
+</div></li>
+<li id="I3.i2" class="ltx_item" style="list-style-type:none;"><span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="I3.i2.p1" class="ltx_para">
+<p class="ltx_p">non-standard editor and gui environments</p>
+</div></li>
+</ul>
+</div>
+</div>
+<div id="P4" class="ltx_paragraph">
+<h3 class="ltx_title ltx_title_paragraph">ChucK (Ge Wang and Perry Cook)</h3>
+
+<div id="P4.p1" class="ltx_para">
+<p class="ltx_p">ChucK is another text-based audio programming environment that emphasizes a live-coding ethos.</p>
+<ul id="I4" class="ltx_itemize">
+<li id="I4.i1" class="ltx_item" style="list-style-type:none;"><span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="I4.i1.p1" class="ltx_para">
+<p class="ltx_p">admittedly emphasizes ease of programming over performance (ChucK is slow)</p>
+</div></li>
+<li id="I4.i2" class="ltx_item" style="list-style-type:none;"><span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="I4.i2.p1" class="ltx_para">
+<p class="ltx_p">unintuitive approach to time by treating ‘now’ as a variable that we manipulate by hand: <a href="http://en.wikipedia.org/wiki/ChucK" title="" class="ltx_ref ltx_url"><span class="ltx_text ltx_font_typewriter">http://en.wikipedia.org/wiki/ChucK</span></a></p>
+</div></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="ltx_subsubsection">
+<h2 class="ltx_title ltx_title_subsubsection"><span class="ltx_tag ltx_tag_subsubsection">1.1.2 </span>Control timing</h2>
+
+<div id="p1" class="ltx_para">
+<p class="ltx_p">All of the above metnioned systems have specific solutions to problems of rectifying the timing between control input and precisely when control is enacted in the DSP engine. Cf. my poster from last year’s ICMC (TIMELAB: YET, YET ANOTHER REAL-TIME AUDIO PROGRAMMING SYSTEM – not yet available online) for a quick and dirty on this subject.</p>
+</div>
+<div id="p2" class="ltx_para">
+<p class="ltx_p">Also of relevance are these talks by Miller Puckette and James McCartney:
+<a href="http://repmus.ircam.fr/mutant/rtmseminars" title="" class="ltx_ref ltx_url"><span class="ltx_text ltx_font_typewriter">http://repmus.ircam.fr/mutant/rtmseminars</span></a></p>
+<ul id="I5" class="ltx_itemize">
+<li id="I5.i1" class="ltx_item" style="list-style-type:none;"><span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="I5.i1.p1" class="ltx_para">
+<p class="ltx_p">Puckette talk: 9:30 - 15:00 : DAGs and mutual exclusion, determinism</p>
+</div></li>
+<li id="I5.i2" class="ltx_item" style="list-style-type:none;"><span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="I5.i2.p1" class="ltx_para">
+<p class="ltx_p">McCartney talk: 29:00 - 37:45 : control rate issues</p>
+</div></li>
+</ul>
+</div>
+</div>
+<div class="ltx_subsubsection">
+<h2 class="ltx_title ltx_title_subsubsection"><span class="ltx_tag ltx_tag_subsubsection">1.1.3 </span>embedded audio programming</h2>
+
+<div id="p1" class="ltx_para">
+<p class="ltx_p">Just the other day (Friday, March 14) someone posted to the Pd-list asking if it was possible to crunch a Pd patch down into a guitar pedal (the answer was ‘no, not really’). Clearly, there is a market for throwing these kinds of experimental algorithms into a guitar pedal packages. One solution is to utilize micro computers such as the Raspberry Pi or UDOO. Another is to have an audio programming API in C with a build environment that can target truly embedable hardware, such as ST’s discovery board featuring the ARM Cortex processor (or any of the open source solutions built around these chips).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="ltx_page_footer">
+<div><a href="S1.xhtml" title="1 Introduction ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’" class="ltx_ref" rel="prev"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">1 </span>Introduction</span></a><a href="S1.SS1.SSS1.xhtml" title="1.1.1 issues with existing systems ‣ ‘Continuous-Time’ Synthesis and the Context of Timelab’" class="ltx_ref" rel="next"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">1.1.1 </span>issues with existing systems</span></a>
+</div>
+<div class="ltx_page_logo">Generated  on Sun Mar 16 17:32:54 2014 by <a href="http://dlmf.nist.gov/LaTeXML/">LaTeXML <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAOCAYAAAD5YeaVAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wKExQZLWTEaOUAAAAddEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q72QlbgAAAdpJREFUKM9tkL+L2nAARz9fPZNCKFapUn8kyI0e4iRHSR1Kb8ng0lJw6FYHFwv2LwhOpcWxTjeUunYqOmqd6hEoRDhtDWdA8ApRYsSUCDHNt5ul13vz4w0vWCgUnnEc975arX6ORqN3VqtVZbfbTQC4uEHANM3jSqXymFI6yWazP2KxWAXAL9zCUa1Wy2tXVxheKA9YNoR8Pt+aTqe4FVVVvz05O6MBhqUIBGk8Hn8HAOVy+T+XLJfLS4ZhTiRJgqIoVBRFIoric47jPnmeB1mW/9rr9ZpSSn3Lsmir1fJZlqWlUonKsvwWwD8ymc/nXwVBeLjf7xEKhdBut9Hr9WgmkyGEkJwsy5eHG5vN5g0AKIoCAEgkEkin0wQAfN9/cXPdheu6P33fBwB4ngcAcByHJpPJl+fn54mD3Gg0NrquXxeLRQAAwzAYj8cwTZPwPH9/sVg8PXweDAauqqr2cDjEer1GJBLBZDJBs9mE4zjwfZ85lAGg2+06hmGgXq+j3+/DsixYlgVN03a9Xu8jgCNCyIegIAgx13Vfd7vdu+FweG8YRkjXdWy329+dTgeSJD3ieZ7RNO0VAXAPwDEAO5VKndi2fWrb9jWl9Esul6PZbDY9Go1OZ7PZ9z/lyuD3OozU2wAAAABJRU5ErkJggg==" alt="[LOGO]"/></a></div></div>
+</div>
+</body>
+</html>

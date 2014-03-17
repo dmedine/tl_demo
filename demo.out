@@ -5,16 +5,18 @@
 \BOOKMARK [3][-]{subsubsection.1.1.3}{Control timing}{subsection.1.1}% 5
 \BOOKMARK [3][-]{subsubsection.1.1.4}{embedded audio programming}{subsection.1.1}% 6
 \BOOKMARK [1][-]{section.2}{Continuous-Time Synthesis}{}% 7
-\BOOKMARK [2][-]{subsection.2.1}{0-time delay lines}{section.2}% 8
+\BOOKMARK [2][-]{subsection.2.1}{sync functions}{section.2}% 8
 \BOOKMARK [2][-]{subsection.2.2}{virtual analog}{section.2}% 9
 \BOOKMARK [3][-]{subsubsection.2.2.1}{ngspice}{subsection.2.2}% 10
 \BOOKMARK [3][-]{subsubsection.2.2.2}{wave-digital filters}{subsection.2.2}% 11
-\BOOKMARK [3][-]{subsubsection.2.2.3}{moog filter example}{subsection.2.2}% 12
-\BOOKMARK [2][-]{subsection.2.3}{new models for new sounds}{section.2}% 13
-\BOOKMARK [3][-]{subsubsection.2.3.1}{noisey oscillators}{subsection.2.3}% 14
-\BOOKMARK [3][-]{subsubsection.2.3.2}{non-linear filters}{subsection.2.3}% 15
-\BOOKMARK [3][-]{subsubsection.2.3.3}{a new way to view synthesis}{subsection.2.3}% 16
-\BOOKMARK [2][-]{subsection.2.4}{What's Next?}{section.2}% 17
-\BOOKMARK [1][-]{section.3}{Timelab}{}% 18
-\BOOKMARK [2][-]{subsection.3.1}{Brief Overview}{section.3}% 19
-\BOOKMARK [2][-]{subsection.3.2}{Examples}{section.3}% 20
+\BOOKMARK [1][-]{section.3}{Timelab}{}% 12
+\BOOKMARK [2][-]{subsection.3.1}{Brief Overview}{section.3}% 13
+\BOOKMARK [2][-]{subsection.3.2}{Examples}{section.3}% 14
+\BOOKMARK [3][-]{subsubsection.3.2.1}{quadrature oscillator}{subsection.3.2}% 15
+\BOOKMARK [3][-]{subsubsection.3.2.2}{non-linear oscillators}{subsection.3.2}% 16
+\BOOKMARK [3][-]{subsubsection.3.2.3}{moog filter example}{subsection.3.2}% 17
+\BOOKMARK [3][-]{subsubsection.3.2.4}{larger synth example}{subsection.3.2}% 18
+\BOOKMARK [2][-]{subsection.3.3}{new models for new sounds}{section.3}% 19
+\BOOKMARK [3][-]{subsubsection.3.3.1}{noisey oscillators}{subsection.3.3}% 20
+\BOOKMARK [3][-]{subsubsection.3.3.2}{non-linear filters}{subsection.3.3}% 21
+\BOOKMARK [3][-]{subsubsection.3.3.3}{a new way to view synthesis}{subsection.3.3}% 22

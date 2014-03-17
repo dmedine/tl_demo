@@ -1,22 +1,21 @@
 \documentclass{article}
 \usepackage{hyperref}
-\usepackage{graphicx}
-\usepackage{caption}
-\usepackage{subcaption}
+
 \begin{document}
 \title{`Continuous-Time' Synthesis and the Context of Timelab'}
 \maketitle
 \section{Introduction}
 
 \subsection{why timelab?}
+I wanted to go through the excercise of designing and implementing an audio scheduler in order to learn more about the underlying structure of computermusic systems and to create an environment that side-steps what I see as the limitations of existing systems.
 \subsubsection{issues with existing systems}
 
-\paragraph{Music-N/CSound (Max Mathews and John ffitch, 1957-present)}
+\paragraph{Music-N/CSound (Max Mathews, Barry Vercoe, John ffitch, and others 1957-present)}
 A classic programming environment, stemming from the pioneering work of Max Mathews, it is  widely used, and highly developed.
 \begin{itemize}
 \item rigid structure 
 \item difficult to interact with / compile time
-\item obtuse representation of scores and synths / hard to read: \href{./score.sco.html}{score} \href{./orc.html}{instrument}
+\item obtuse representation of scores and synths / hard to read (pull up examples)
 \item score/instrument layout insists on antique perception of music composition/creation -- a notion which in many ways goes against the grain of analog electronic music practices 
   %note -- discuss Stockhausen, Shaffer, and Buchla here
 \end{itemize} 
@@ -44,7 +43,6 @@ ChucK is another text-based audio programming environment that emphasizes a live
 \item unintuitive approach to time by treating `now' as a variable that we manipulate by hand: \url{http://en.wikipedia.org/wiki/ChucK}
 \end{itemize}
 
-\subsubsection{Fall 2012 206}
 \subsubsection{Control timing}
 All of the above metnioned systems have specific solutions to problems of rectifying the timing between control input and precisely when control is enacted in the DSP engine. Cf. my poster from last year's ICMC (TIMELAB: YET, YET ANOTHER REAL-TIME AUDIO PROGRAMMING SYSTEM -- not yet available online) for a quick and dirty on this subject.
 
@@ -62,32 +60,60 @@ Just the other day (Friday, March 14) someone posted to the Pd-list asking if it
 \paragraph{What is meant by `continuous-time synthesis'}
 \begin{itemize}
 \item as distinct from traditional computer music DSP structure which consists of UGens and signal flow
-\item uses differential equations to model synthesis behaviors
-\item create complex synthesis algorithms by arranging equations in a network with interleaved numerical solver stages so that time does not pass between nodes in the network
+\item use differential equations to model synthesis behaviors
 \end{itemize}
-This affords us advantages that are beyond the scope of UGen/signal flow structures.
-\subsection{0-time delay lines}
-The object of allowing for 0-time delay lines in a network is to fascilitate (among other things) accurate sync-ing. In the parlance of analog synthesizers, a master oscillator may slave another one to it by resetting the phase of the slave at every other zero crossing (period) of the master. 
-\begin{figure}
-  \centering
-  
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=3in]{sync4}
-    \caption{red syncs blue}
-  \end{subfigure}
-  
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=3in]{sync6}
-    \caption{misaligned sync}
-  \end{subfigure}
-  \label{fig-syncs}\caption{On the left, the blue oscillator is slaved to the red. On the right each is slaved to the other, but notice the `hiccups' due to non-zero-time delay betwen the oscillators.}
-\end{figure}
-\subsection{virtual analog}
-\subsubsection{ngspice}
-\subsubsection{wave-digital filters}
-\subsubsection{quadrature oscillator}
-\subsubsection{moog filter example}
+This affords us advantages that are beyond the scope of UGen/signal flow structures. The programmer may create complex synthesis algorithms by arranging equations in a network with interleaved numerical solver stages so that time does not pass between nodes in the network. In other words, `delay free loops', or `instantaneous feedback' is acheivable. The mathematical necessity of unit delay is currently a limitation of the sate of the art in computer music systems and synthesis theory.
 
+\subsection{sync functions}
+Delay free feedback in a network can fascilitate (among other things) accurate oscillator sync. In the parlance of analog synthesizers, a master oscillator may slave another one to it by resetting the phase of the slave at every other zero crossing (each period) of the master.\\ 
+\href{./sync4.pdf}{red function slaves blue function}\\
+\href{./sync6.pdf}{misaligned reciprocal sync}\\
+
+Sync functionality is but one benefit of delay free loops. In general having instantaneous state updates from stage to stage in a synthesis algorithms allows for a general solution to numerous problems associated with Virtual Analog.
+
+\subsection{virtual analog}
+Virtual analog (VA) is the practice of emulating the sound of analog synthesizers with DSP algorithms. This is desirable because: 
+\begin{itemize}
+\item analog gear is heavy, and expensive
+\item analog gear is sensitive to heat and requires constant tuning and maintainance
+\item polyphony is `expensive' in analog and `cheap' in digital
+\item digitization means patches and states can be saved and easily re-accessed
+\end{itemize}
+But, analog `sounds better'. It is precisely the inexactness of analog and the nature of circuit components that give analog equipment its richness. Challenges in VA include:
+\begin{itemize}
+\item aliasing due to the Nyquist theorem
+\item parameter (state) change quantization
+\item unit delay fudge-factors
+\end{itemize}
+Although it has been around since Synergy (1981), and the term was brought into commercial use nearly 20 years ago with the introduction of the Nord Lead 1 synthesizer (1996), VA is still a very active area of computer music research.
+
+There are numerous papers and book chapters that propose novel algorithms and improvemnets to existing algorithms in VA. Many address problems in problem-specific ways. There are a also a few general solutions to these problems.
+
+\subsubsection{ngspice}
+Needs be mentioned: ngspice is the current open source edition of Berkeley's spice (Simulation Program with Integrated Circuit Emphasis -- Nagel, 1971). Spice and its descendants allow users to construct virtual integrated circuits and the algorithm will simulate the behavior of the circuit by using numerical solvers. It is not real-time, nor is it intended for audio synthesis.
+\subsubsection{wave-digital filters}
+WDFs are an approach to circuit emulations that are attractive because:
+\begin{itemize}
+\item they are modular
+\item circuit component behavior is easily discretized with the bilinear transform
+\item they are computationally cheap, thus networks of very many of them are readily available
+\end{itemize}
+However, the trick of designing WDF networks often lies in dealing with delay free loops (to which often unit delay is the given solution) and non-linearities. The continuous time synthesis model comletely does away with these complications, but at the price of increased complexity in the domain of physical model design.
+
+\section{Timelab}
+\subsection{Brief Overview}
+\subsection{Examples}
+\subsubsection{quadrature oscillator}
+\subsubsection{non-linear oscillators}
+These are often good as LFOs due to their controlled chaotic behavior:
+\begin{itemize}
+
+\item van der Pol oscillators
+\item Duffing oscillators
+\item other noisey oscillators
+\end{itemize}
+\subsubsection{moog filter example}
+\subsubsection{larger synth example}
 \subsection{new models for new sounds}
 \subsubsection{noisey oscillators}
 %examples -- applications (lfos) do a patch
@@ -95,9 +121,4 @@ The object of allowing for 0-time delay lines in a network is to fascilitate (am
 %????
 \subsubsection{a new way to view synthesis}
 
-\subsection{What's Next?}
-%control, more features
-\section{Timelab}
-\subsection{Brief Overview}
-\subsection{Examples}
 \end{document}
